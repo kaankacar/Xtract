@@ -9,10 +9,10 @@ XTract analyzes Solidity code and generates MultiversX Rust code that can be com
 ## Version 0.2 Notes
 
 This is version 0.2 of the transpiler with the following changes:
-- Implemented a simplified Python-based version to demonstrate core conversion principles
-- Successfully handles ~72% of features across test cases
+- Introduces a Python CLI implementing a core conversion subset
+- Validated on sample contracts in `test_cases` via unit tests
 - Supports basic contract structures, events, functions, and simple storage patterns
-- Serves as a proof-of-concept while Rust implementation dependency issues are resolved
+- Rust implementation is available under `rust-impl/` for future iteration
 
 For full implementation details, see [transpiler_report.md](transpiler_report.md).
 
