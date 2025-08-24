@@ -1,0 +1,12 @@
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/libcolored-576388f1b0572e83.rmeta: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/color.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/control.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/error.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/style.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/customcolors.rs
+
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/libcolored-576388f1b0572e83.rlib: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/color.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/control.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/error.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/style.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/customcolors.rs
+
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/colored-576388f1b0572e83.d: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/color.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/control.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/error.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/style.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/customcolors.rs
+
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/lib.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/color.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/control.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/error.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/style.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/colored-3.0.0/src/customcolors.rs:

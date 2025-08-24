@@ -1,0 +1,11 @@
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/libconvert_case-311312b59ddaf951.rmeta: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/boundary.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/case.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/converter.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/pattern.rs
+
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/libconvert_case-311312b59ddaf951.rlib: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/boundary.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/case.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/converter.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/pattern.rs
+
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/deps/convert_case-311312b59ddaf951.d: /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/lib.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/boundary.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/case.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/converter.rs /Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/pattern.rs
+
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/lib.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/boundary.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/case.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/converter.rs:
+/Users/kaan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.8.0/src/pattern.rs:

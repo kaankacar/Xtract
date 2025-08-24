@@ -1,0 +1,1 @@
+/Users/kaan/solidity_to_multiversx-1/ping-pong-test/target/debug/ping-pong-test-meta: /Users/kaan/solidity_to_multiversx-1/ping-pong-test/meta/src/main.rs /Users/kaan/solidity_to_multiversx-1/ping-pong-test/src/ping_pong_test.rs /Users/kaan/solidity_to_multiversx-1/ping-pong-test/src/proxy_ping_pong_egld.rs /Users/kaan/solidity_to_multiversx-1/ping-pong-test/src/types.rs
