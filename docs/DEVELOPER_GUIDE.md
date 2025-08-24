@@ -1,4 +1,4 @@
-# Solidity to MultiversX Transpiler - Developer Guide
+# XTract - Developer Guide
 
 ## Introduction
 
@@ -17,19 +17,41 @@ The transpiler supports the following Solidity features:
 - Error handling (require, revert)
 - Basic control flow (if, while, for)
 
+## Python package structure
+
+The repository includes a minimal Python package `xtract` implementing the core transpilation pipeline for milestone 1:
+
+- `xtract/transpiler.py`: core logic for parsing Solidity surface patterns and emitting MultiversX Rust
+- `xtract/cli.py`: CLI entrypoint (`xtract <input.sol> [output.rs]`)
+- `tests/`: pytest-based unit tests against `test_cases`
+
+## Install (dev)
+
+```bash
+python -m pip install --upgrade pip
+pip install -e .[dev]
+```
+
 ## Usage
 
 ### Basic Command
+
+Python CLI:
+
+```bash
+xtract <solidity_file.sol> [output.rs]
+```
+
+Legacy Rust runner (WIP):
 
 ```bash
 cargo run <solidity_file.sol>
 ```
 
-This will:
-1. Parse the Solidity file
+Python path will:
+1. Parse the Solidity file (regex-based subset)
 2. Generate a MultiversX-compatible Rust smart contract file with the same name (e.g., `solidity_file.rs`)
-3. Compile the Rust contract to WebAssembly
-4. Deploy the contract to the MultiversX blockchain (if wallet configuration is provided)
+3. Provide unit tests comparing shapes against `test_cases/expected`
 
 ### Examples
 

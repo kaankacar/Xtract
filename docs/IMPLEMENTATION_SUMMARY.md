@@ -1,8 +1,8 @@
-# Solidity to MultiversX Transpiler - Implementation Summary
+# XTract - Implementation Summary
 
 ## Completed Implementations
 
-We have successfully implemented a Solidity to MultiversX transpiler with the following features:
+We have successfully implemented XTract’s Solidity → MultiversX transpilation with the following features:
 
 ### 1. Type Mapping
 - Enhanced the `map_type` function to support more Solidity types and map them to appropriate MultiversX types
@@ -30,7 +30,7 @@ Created several test cases demonstrating the transpiler's capabilities:
 ### 5. Documentation
 - Created a comprehensive developer guide
 - Added type mapping documentation
-- Provided examples of Solidity to MultiversX transformations
+- Provided examples of Solidity → MultiversX transformations
 - Included troubleshooting guidance
 
 ## Features Implemented

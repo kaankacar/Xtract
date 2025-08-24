@@ -7,7 +7,7 @@ from pathlib import Path
 
 class SimplifiedTranspiler:
     """
-    A simplified transpiler that focuses on Solidity to MultiversX conversion
+    A simplified transpiler that focuses on XTract's Solidity → MultiversX conversion
     for specific test cases. This is not a full-featured transpiler but rather
     a demonstration of the conversion process.
     """

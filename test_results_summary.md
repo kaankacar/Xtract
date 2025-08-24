@@ -1,4 +1,4 @@
-# Solidity to MultiversX Transpiler - Test Results
+# XTract - Test Results
 
 ## Summary
 

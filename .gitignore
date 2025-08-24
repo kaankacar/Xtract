@@ -1,3 +1,21 @@
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Rust target
+target/
+
+# IDE
+.vscode/
+.idea/
+
 /target
 ast.json
 input_sol_SimpleContract.abi

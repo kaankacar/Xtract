@@ -1,4 +1,4 @@
-# Solidity to MultiversX Transpiler Implementation Report
+# XTract Implementation Report
 
 ## Summary
 
@@ -15,7 +15,7 @@ After encountering dependency issues with the original Rust-based implementation
 3. **Implemented key feature mappings**:
    - Contract structure conversion
    - Function name transformation (camelCase to snake_case)
-   - Type mapping (Solidity to MultiversX types)
+   - Type mapping (Solidity → MultiversX types)
    - Event handling with indexed parameters
    - Struct definition conversion
    - Storage mapper generation
