@@ -133,19 +133,22 @@ Previous release with:
 
 ## Feature Comparison
 
-| Feature | v0.25 | v0.30 |
-|---------|-------|-------|
-| Basic Contracts | ✅ | ✅ |
-| Single Mappings | ✅ | ✅ |
-| Nested Mappings | ⚠️ | ✅ |
-| Events | ✅ | ✅ |
-| Structs | ✅ | ✅ |
-| Errors | ✅ | ✅ |
-| require/revert | ✅ | ✅ |
-| Function Modifiers | ❌ | ✅ |
-| Inheritance | ❌ | ✅ |
-| Diagnostics | ❌ | ✅ |
-| Test Cases | 5 | 50 |
+| Feature | v0.25 | v0.30 | v0.30.1 |
+|---------|-------|-------|---------|
+| Basic Contracts | ✅ | ✅ | ✅ |
+| Single Mappings | ✅ | ✅ | ✅ |
+| Nested Mappings | ⚠️ | ✅ | ✅ |
+| Events | ✅ | ✅ | ✅ |
+| Structs | ✅ | ✅ | ✅ |
+| Errors | ✅ | ✅ | ✅ |
+| require/revert | ✅ | ✅ | ✅ |
+| Function Modifiers | ❌ | ✅ | ✅ |
+| Inheritance | ❌ | ✅ | ✅ |
+| Diagnostics | ❌ | ✅ | ✅ |
+| Payable Functions | ❌ | ❌ | ✅ |
+| If/Else Statements | ❌ | ❌ | ✅ |
+| For/While Loops | ❌ | ❌ | ✅ |
+| Test Cases | 5 | 50 | 64 |
 
 ## Migration Notes
 
@@ -163,10 +166,23 @@ New features:
 
 4. **Diagnostics**: Use `-v` flag to see warnings about unsupported features.
 
+## [0.30.1] - 2024-12-23
+
+### Added
+
+#### Control Flow Transpilation
+- **Payable functions**: Automatic `#[payable("EGLD")]` annotation for payable functions
+- **If/else statements**: Full if/else transpilation with proper Rust syntax
+- **For loops**: Counter-based for loops transpiled to `for i in 0..n` syntax
+- **While loops**: While loop transpilation with condition conversion
+
+#### Parser Improvements
+- Robust function body extraction using brace matching (handles nested control flow)
+- Payable function detection from Solidity modifiers
+
 ## Known Limitations
 
-- Loops (for, while) not yet supported
-- If/else statements require manual review
+- Do-while loops not yet supported
 - Inline assembly not supported
 - Libraries require manual flattening
-- Payable functions need manual annotation
+- Try-catch blocks not supported (use require/revert)
