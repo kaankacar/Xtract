@@ -1,4 +1,17 @@
+"""
+XTract Transpiler Test Suite
+
+This test suite validates the Solidity to MultiversX Rust transpilation.
+It tests 50 different contract patterns including:
+- Basic contracts
+- Mappings (single and nested)
+- Function modifiers
+- Basic inheritance
+- Various DeFi patterns
+"""
+
 from pathlib import Path
+import pytest
 
 from xtract.transpiler import Transpiler
 
@@ -12,9 +25,29 @@ def normalize(s: str) -> str:
     return s.replace("\r\n", "\n").strip()
 
 
-def test_simple_storage_shape():
-    sol = load("test_cases/solidity/SimpleStorage.sol")
-    expected = load("test_cases/expected/SimpleStorage.rs")
+def get_test_files():
+    """Get all Solidity test files that have corresponding expected outputs"""
+    solidity_dir = Path("test_cases/solidity")
+    expected_dir = Path("test_cases/expected")
+
+    test_files = []
+    for sol_file in sorted(solidity_dir.glob("*.sol")):
+        expected_file = expected_dir / sol_file.with_suffix(".rs").name
+        if expected_file.exists():
+            test_files.append((sol_file.stem, str(sol_file), str(expected_file)))
+
+    return test_files
+
+
+# Generate test cases for all contracts
+TEST_CASES = get_test_files()
+
+
+@pytest.mark.parametrize("name,sol_path,expected_path", TEST_CASES, ids=[t[0] for t in TEST_CASES])
+def test_transpilation(name, sol_path, expected_path):
+    """Test transpilation of each contract against expected output"""
+    sol = load(sol_path)
+    expected = load(expected_path)
     actual = Transpiler().convert(sol)
 
     # Normalize both for comparison
@@ -23,7 +56,6 @@ def test_simple_storage_shape():
 
     # Primary validation: compare normalized expected vs actual
     if expected_normalized != actual_normalized:
-        # Provide helpful diff output
         import difflib
         diff = difflib.unified_diff(
             expected_normalized.splitlines(keepends=True),
@@ -33,146 +65,181 @@ def test_simple_storage_shape():
             lineterm=""
         )
         diff_str = "".join(diff)
-        assert False, f"Generated output does not match expected file:\n{diff_str}"
+        assert False, f"Generated output for {name} does not match expected file:\n{diff_str[:2000]}"
 
-    # Secondary validation: check key features are present (for additional confidence)
+
+# Additional feature-specific tests
+
+def test_simple_storage_features():
+    """Test SimpleStorage contract has key features"""
+    sol = load("test_cases/solidity/SimpleStorage.sol")
+    actual = Transpiler().convert(sol)
+
     assert "pub trait SimpleStorage" in actual
     assert "#[storage_mapper(\"value\")]" in actual
     assert "fn value(&self) -> SingleValueMapper<BigUint<Self::Api>>;" in actual
     assert "#[event(\"ValueChanged\")]" in actual
-    assert "fn value_changed_event" in actual
-    assert "#[view(getValue)]" in actual
-    assert "fn get_value(&self) -> BigUint<Self::Api>" in actual
-    assert "self.value().set(&newValue);" in actual
-    assert "self.value_changed_event(&newValue);" in actual
-    assert "return self.value().get();" in actual
 
 
-def test_erc20_body_generation():
-    # Test ERC20 require and emit statements
+def test_erc20_features():
+    """Test ERC20Token contract has key features"""
     sol = load("test_cases/solidity/ERC20Token.sol")
-    expected = load("test_cases/expected/ERC20Token.rs")
     actual = Transpiler().convert(sol)
 
-    # Normalize both for comparison
-    expected_normalized = normalize(expected)
-    actual_normalized = normalize(actual)
-
-    # Primary validation: compare normalized expected vs actual
-    if expected_normalized != actual_normalized:
-        import difflib
-        diff = difflib.unified_diff(
-            expected_normalized.splitlines(keepends=True),
-            actual_normalized.splitlines(keepends=True),
-            fromfile="expected",
-            tofile="actual",
-            lineterm=""
-        )
-        diff_str = "".join(diff)
-        assert False, f"Generated output does not match expected file:\n{diff_str}"
-
-    # Secondary validation: check key features are present
     assert "#![no_std]" in actual
     assert "use multiversx_sc::imports::*;" in actual
     assert "#[multiversx_sc::contract]" in actual
     assert "pub trait ERC20Token" in actual
     assert "#[storage_mapper(\"totalSupply\")]" in actual
-    assert "#[storage_mapper(\"balance\")]" in actual
-    assert 'require!(self.balance().get() >= _value' in actual
-    assert "self.transfer_event" in actual
-    assert "return true;" in actual
-
-
-def test_voting_body_generation():
-    # Test Voting contract with complex statements
-    sol = load("test_cases/solidity/Voting.sol")
-    expected = load("test_cases/expected/Voting.rs")
-    actual = Transpiler().convert(sol)
-
-    # Normalize both for comparison
-    expected_normalized = normalize(expected)
-    actual_normalized = normalize(actual)
-
-    # Primary validation: compare normalized expected vs actual
-    if expected_normalized != actual_normalized:
-        import difflib
-        diff = difflib.unified_diff(
-            expected_normalized.splitlines(keepends=True),
-            actual_normalized.splitlines(keepends=True),
-            fromfile="expected",
-            tofile="actual",
-            lineterm=""
-        )
-        diff_str = "".join(diff)
-        assert False, f"Generated output does not match expected file:\n{diff_str}"
-
-    # Secondary validation: check key features are present
-    assert "pub trait Voting" in actual
-    assert "#[storage_mapper(\"chairperson\")]" in actual
-    assert "fn chairperson(&self) -> SingleValueMapper<ManagedAddress<Self::Api>>;" in actual
-    assert 'require!' in actual
-    assert "self.proposal_created_event" in actual
-    assert "self.vote_cast_event" in actual
-
-
-def test_nft_marketplace_body_generation():
-    # Test NFT Marketplace with complex features
-    sol = load("test_cases/solidity/NFTMarketplace.sol")
-    expected = load("test_cases/expected/NFTMarketplace.rs")
-    actual = Transpiler().convert(sol)
-
-    # Normalize both for comparison
-    expected_normalized = normalize(expected)
-    actual_normalized = normalize(actual)
-
-    # Primary validation: compare normalized expected vs actual
-    if expected_normalized != actual_normalized:
-        import difflib
-        diff = difflib.unified_diff(
-            expected_normalized.splitlines(keepends=True),
-            actual_normalized.splitlines(keepends=True),
-            fromfile="expected",
-            tofile="actual",
-            lineterm=""
-        )
-        diff_str = "".join(diff)
-        assert False, f"Generated output does not match expected file:\n{diff_str}"
-
-    # Secondary validation: check key features are present
-    assert "pub trait NFTMarketplace" in actual
-    assert "#[storage_mapper(\"nextTokenId\")]" in actual
-    assert "fn next_token_id(&self) -> SingleValueMapper<BigUint<Self::Api>>;" in actual
-    assert "_event" in actual
-    assert ".set(" in actual or ".push(" in actual
-
-
-def test_crowdfunding_body_generation():
-    # Test Crowdfunding contract
-    sol = load("test_cases/solidity/Crowdfunding.sol")
-    expected = load("test_cases/expected/Crowdfunding.rs")
-    actual = Transpiler().convert(sol)
-
-    # Normalize both for comparison
-    expected_normalized = normalize(expected)
-    actual_normalized = normalize(actual)
-
-    # Primary validation: compare normalized expected vs actual
-    if expected_normalized != actual_normalized:
-        import difflib
-        diff = difflib.unified_diff(
-            expected_normalized.splitlines(keepends=True),
-            actual_normalized.splitlines(keepends=True),
-            fromfile="expected",
-            tofile="actual",
-            lineterm=""
-        )
-        diff_str = "".join(diff)
-        assert False, f"Generated output does not match expected file:\n{diff_str}"
-
-    # Secondary validation: check key features are present
-    assert "pub trait Crowdfunding" in actual
     assert "require!" in actual
-    assert "_event" in actual
-    assert ".set(" in actual or ".get(" in actual
 
 
+def test_nested_mapping_features():
+    """Test nested mapping transpilation"""
+    sol = load("test_cases/solidity/NestedMapping.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait NestedMapping" in actual
+    assert "#[storage_mapper(\"allowance\")]" in actual
+    # Nested mapping should have two key parameters
+    assert "key1:" in actual or "key2:" in actual
+
+
+def test_modifier_features():
+    """Test modifier transpilation"""
+    sol = load("test_cases/solidity/OnlyOwner.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait OnlyOwner" in actual
+    assert "#[storage_mapper(\"owner\")]" in actual
+    # Modifier should be converted to require! check
+    assert "require!" in actual
+
+
+def test_inheritance_features():
+    """Test inheritance transpilation"""
+    sol = load("test_cases/solidity/SimpleInheritance.sol")
+    actual = Transpiler().convert(sol)
+
+    # Should include inheritance comment or supertrait
+    assert "pub trait SimpleInheritance" in actual
+    assert "Ownable" in actual  # Parent contract reference
+
+
+def test_multiple_modifiers():
+    """Test contract with multiple modifiers"""
+    sol = load("test_cases/solidity/Pausable.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait Pausable" in actual
+    assert "#[storage_mapper(\"paused\")]" in actual
+    assert "require!" in actual
+
+
+def test_staking_contract():
+    """Test staking contract pattern"""
+    sol = load("test_cases/solidity/Staking.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait Staking" in actual
+    assert "#[storage_mapper(\"stakes\")]" in actual
+    assert "#[storage_mapper(\"rewards\")]" in actual
+    assert "#[event(\"Staked\")]" in actual
+
+
+def test_vault_contract():
+    """Test vault contract pattern"""
+    sol = load("test_cases/solidity/Vault.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait Vault" in actual
+    assert "#[storage_mapper(\"balances\")]" in actual
+    assert "#[event(\"Deposited\")]" in actual
+    assert "#[event(\"WithdrawalCompleted\")]" in actual
+
+
+def test_governance_contract():
+    """Test governance contract pattern"""
+    sol = load("test_cases/solidity/Governance.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait Governance" in actual
+    assert "#[storage_mapper(\"proposalVotes\")]" in actual
+    assert "#[event(\"ProposalCreated\")]" in actual
+    assert "#[event(\"Voted\")]" in actual
+
+
+def test_badge_nested_mapping():
+    """Test contract with nested mapping (user => badgeId => bool)"""
+    sol = load("test_cases/solidity/Badge.sol")
+    actual = Transpiler().convert(sol)
+
+    assert "pub trait Badge" in actual
+    assert "#[storage_mapper(\"hasBadge\")]" in actual
+
+
+# Diagnostics tests
+
+def test_loops_are_supported():
+    """Test that for loops are now transpiled (not just warned about)"""
+    sol_with_loop = """
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
+
+    contract LoopContract {
+        uint256 public sum;
+
+        function sumToN(uint256 n) public {
+            for (uint i = 0; i < n; i++) {
+                sum = sum + 1;
+            }
+        }
+    }
+    """
+
+    transpiler = Transpiler()
+    result = transpiler.convert(sol_with_loop)
+
+    # Should contain a for loop in Rust syntax
+    assert "for i in 0.." in result
+
+
+def test_if_statements_are_supported():
+    """Test that if statements are now transpiled"""
+    sol_with_if = """
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
+
+    contract IfContract {
+        uint256 public value;
+
+        function setIfPositive(uint256 x) public {
+            if (x > 0) {
+                value = x;
+            }
+        }
+    }
+    """
+
+    transpiler = Transpiler()
+    result = transpiler.convert(sol_with_if)
+
+    # Should contain if statement in Rust syntax
+    assert "if " in result and "{" in result
+
+
+def test_convert_with_diagnostics():
+    """Test convert_with_diagnostics returns proper result"""
+    sol = load("test_cases/solidity/SimpleStorage.sol")
+
+    transpiler = Transpiler()
+    result = transpiler.convert_with_diagnostics(sol)
+
+    assert result.success
+    assert "pub trait SimpleStorage" in result.code
+
+
+# Count test to verify we have 50 test cases
+def test_fifty_test_cases():
+    """Verify we have at least 50 test cases"""
+    assert len(TEST_CASES) >= 50, f"Expected at least 50 test cases, got {len(TEST_CASES)}"
