@@ -1,6 +1,6 @@
-# XTract v0.30 - Beta Release
+# XTract v0.30.1 - Beta Release
 
-XTract is a Solidity to MultiversX Rust smart contract transpiler. This release expands Solidity feature support and includes extensive testing.
+XTract is a Solidity to MultiversX Rust smart contract transpiler. This release expands Solidity feature support with control flow transpilation and includes extensive testing.
 
 ## Release Highlights
 
@@ -8,6 +8,8 @@ XTract is a Solidity to MultiversX Rust smart contract transpiler. This release 
 - **Function Modifiers**: Support for custom modifiers like `onlyOwner`
 - **Basic Inheritance**: Contract inheritance with supertrait generation
 - **Enhanced Diagnostics**: Comprehensive error handling and warnings
+- **Control Flow Transpilation**: Full support for if/else, for loops, and while loops
+- **Payable Functions**: Automatic `#[payable("EGLD")]` annotation
 - **50 Test Cases**: Extensive test coverage across various contract patterns
 
 ## New Features
@@ -68,6 +70,99 @@ pub trait Token: Ownable + Pausable {
 }
 ```
 
+### Payable Functions
+
+```solidity
+function deposit() public payable {
+    balances[msg.sender] += msg.value;
+}
+```
+
+Transpiles to:
+
+```rust
+#[payable("EGLD")]
+#[endpoint]
+fn deposit(&self) {
+    // Payable annotation automatically added
+}
+```
+
+### If/Else Statements
+
+```solidity
+function checkValue(uint256 x) public view returns (bool) {
+    if (x > 100) {
+        return true;
+    } else {
+        return false;
+    }
+}
+```
+
+Transpiles to:
+
+```rust
+#[view(checkValue)]
+fn check_value(&self, x: BigUint<Self::Api>) -> bool {
+    if x > BigUint::from(100u32) {
+        return true;
+    } else {
+        return false;
+    }
+}
+```
+
+### For Loops
+
+```solidity
+function sumArray(uint256 n) public pure returns (uint256) {
+    uint256 sum = 0;
+    for (uint i = 0; i < n; i++) {
+        sum += i;
+    }
+    return sum;
+}
+```
+
+Transpiles to:
+
+```rust
+#[endpoint]
+fn sum_array(&self, n: BigUint<Self::Api>) -> BigUint<Self::Api> {
+    let mut sum = BigUint::from(0u32);
+    for i in 0..n {
+        sum += i;
+    }
+    return sum;
+}
+```
+
+### While Loops
+
+```solidity
+function countdown(uint256 start) public pure returns (uint256) {
+    uint256 count = start;
+    while (count > 0) {
+        count--;
+    }
+    return count;
+}
+```
+
+Transpiles to:
+
+```rust
+#[endpoint]
+fn countdown(&self, start: BigUint<Self::Api>) -> BigUint<Self::Api> {
+    let mut count = start;
+    while count > BigUint::from(0u32) {
+        count -= BigUint::from(1u32);
+    }
+    return count;
+}
+```
+
 ### Enhanced Diagnostics
 
 The transpiler now provides detailed diagnostics for unsupported features:
@@ -76,9 +171,9 @@ The transpiler now provides detailed diagnostics for unsupported features:
 xtract -v MyContract.sol
 
 Diagnostics:
-  ⚠️ For loops are not yet supported - manual conversion required
-  ⚠️ If statements are not yet fully supported - may require manual review
-  ℹ️ Payable functions detected - add #[payable("EGLD")] annotation manually
+  ⚠️ Do-while loops are not yet supported - manual conversion required
+  ⚠️ Inline assembly is not supported
+  ℹ️ Interface detected - will be converted to trait
 
 ✅ Wrote MyContract.rs
 ```
@@ -99,6 +194,16 @@ This release includes 50 Solidity test cases covering:
 **Total: 50 test cases, 64 test functions, 100% passing**
 
 ## Installation
+
+### Via npm (recommended)
+
+```bash
+npm install -g xtract-cli
+```
+
+**npm package:** [https://www.npmjs.com/package/xtract-cli](https://www.npmjs.com/package/xtract-cli)
+
+### Via pip (Python)
 
 ```bash
 pip install xtract
@@ -132,15 +237,17 @@ xtract -q MyContract.sol
 - ✅ Function modifiers (onlyOwner, custom)
 - ✅ Basic inheritance
 - ✅ require/revert statements
+- ✅ Payable functions (automatic #[payable("EGLD")] annotation)
+- ✅ If/else statements
+- ✅ For loops (counter-based)
+- ✅ While loops
 
 ### Requires Manual Review
-- ⚠️ Payable functions (add #[payable("EGLD")] manually)
 - ⚠️ Complex expressions (may need adjustment)
 - ⚠️ External contract calls
 
 ### Not Yet Supported
-- ❌ For/while loops
-- ❌ If/else statements (full support)
+- ❌ Do-while loops
 - ❌ Inline assembly
 - ❌ Try-catch blocks
 - ❌ Libraries
@@ -164,12 +271,13 @@ New features are additive:
 
 ## Next Steps
 
-Milestone 3 will focus on:
-- Loop support (for, while)
-- Conditional statements (if/else)
-- Advanced inheritance patterns
+Upcoming features:
+- Advanced inheritance patterns (diamond inheritance)
 - External contract calls
-- npm package publication
+- Do-while loops
+- Try-catch block handling
+- SDK development for seamless MultiversX integration
+- Real-world sample projects for contract deployment
 
 ## License
 

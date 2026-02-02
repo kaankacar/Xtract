@@ -1,0 +1,45 @@
+{
+  "name": "xtract-cli",
+  "version": "0.30.1",
+  "description": "Solidity to MultiversX Rust smart contract transpiler",
+  "main": "lib/index.js",
+  "bin": {
+    "xtract": "bin/xtract.js"
+  },
+  "scripts": {
+    "test": "node test/test.js",
+    "postinstall": "node scripts/check-python.js"
+  },
+  "keywords": [
+    "solidity",
+    "rust",
+    "multiversx",
+    "elrond",
+    "transpiler",
+    "smart-contracts",
+    "blockchain",
+    "web3"
+  ],
+  "author": "XTract Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XTract-build/Xtract.git"
+  },
+  "bugs": {
+    "url": "https://github.com/XTract-build/Xtract/issues"
+  },
+  "homepage": "https://github.com/XTract-build/Xtract#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "scripts/",
+    "xtract/",
+    "pyproject.toml"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
