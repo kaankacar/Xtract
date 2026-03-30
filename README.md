@@ -198,8 +198,7 @@ XTract/
   xtract/            # Python package (CLI + core transpiler)
   tests/             # Unit tests (64 test functions)
   test_cases/        # Solidity inputs and expected Rust outputs (50 contracts)
-  demo/              # Compiled demo contracts
-  docs/              # Documentation
+docs/              # Documentation
   .github/workflows/ # CI configuration
   package.json       # npm package configuration
   pyproject.toml     # Python packaging config

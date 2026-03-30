@@ -26,30 +26,3 @@ jobs:
           python -m xtract.cli test_cases/solidity/SimpleStorage.sol /tmp/test_output.rs
           test -f /tmp/test_output.rs
           grep "SimpleStorage" /tmp/test_output.rs
-
-  compile-demo:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
-
-      - name: Cache Cargo registry
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-
-      - name: Check demo compilation
-        run: |
-          cd demo/simple_storage
-          cargo check
-        continue-on-error: true  # Allow failure if toolchain issues
