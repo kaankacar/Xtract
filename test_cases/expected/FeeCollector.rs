@@ -35,7 +35,7 @@ pub trait FeeCollector {
     #[endpoint]
     fn collect_fee(&self, amount: BigUint<Self::Api>) {
         require!(amount > BigUint::from(0u32), "Invalid amount");
-        uint256 fee = amount.clone() * self.fee_percent().get() / BigUint::from(10000u32);
+        let mut fee: BigUint<Self::Api> = amount * self.fee_percent().get() / BigUint::from(10000u32);
         totalCollected = totalCollected + self.fee().get();
         self.fee_collected_event(&self.blockchain().get_caller(), &amount.clone(), &self.fee().get());
     }

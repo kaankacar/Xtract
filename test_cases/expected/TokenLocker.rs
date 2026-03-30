@@ -35,7 +35,7 @@ pub trait TokenLocker {
     fn unlock_tokens(&self) {
         require!(self.lockedAmount(&self.blockchain().get_caller()) > BigUint::from(0u32), "No locked tokens");
         require!(self.blockchain().get_block_timestamp() >= self.lockExpiry(&self.blockchain().get_caller()), "Not yet unlocked");
-        uint256 amount = self.lockedAmount(&self.blockchain().get_caller());
+        let mut amount: BigUint<Self::Api> = self.lockedAmount(&self.blockchain().get_caller());
         self.tokens_unlocked_event(&self.blockchain().get_caller(), &amount.clone());
     }
 

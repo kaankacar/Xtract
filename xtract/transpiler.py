@@ -544,7 +544,27 @@ class Transpiler:
                 })
                 continue
 
-            # Handle assignments and declarations
+            # Handle variable declarations: type name = expr
+            if decl_match := re.match(r'([a-zA-Z_]\w*(?:\[\d*\])?)\s+([a-zA-Z_]\w*)\s*=\s*(.+)', line):
+                statements.append({
+                    "type": "declaration",
+                    "type_name": decl_match.group(1).strip(),
+                    "var_name": decl_match.group(2).strip(),
+                    "value": decl_match.group(3).strip()
+                })
+                continue
+
+            # Handle variable declarations without initializer: type name;
+            if uninit_match := re.match(r'([a-zA-Z_]\w*(?:\[\d*\])?)\s+([a-zA-Z_]\w*)\s*$', line):
+                statements.append({
+                    "type": "declaration",
+                    "type_name": uninit_match.group(1).strip(),
+                    "var_name": uninit_match.group(2).strip(),
+                    "value": None
+                })
+                continue
+
+            # Handle assignments
             if '=' in line:
                 if assign_match := re.match(r'(\w+(?:\s+\w+)*)\s*=\s*(.+)', line):
                     left = assign_match.group(1).strip()
@@ -554,17 +574,6 @@ class Transpiler:
                         "left": left,
                         "right": right
                     })
-                continue
-
-            # Handle variable declarations with initialization
-            if var_match := re.match(r'(\w+(?:\s+\w+)*\s+\w+)\s*=\s*(.+)', line):
-                declaration = var_match.group(1).strip()
-                value = var_match.group(2).strip()
-                statements.append({
-                    "type": "declaration",
-                    "declaration": declaration,
-                    "value": value
-                })
                 continue
 
             # Handle struct initialization and push
@@ -710,8 +719,15 @@ class Transpiler:
                 return f'        {left} = {right};'
 
         elif stmt_type == "declaration":
-            # For now, we'll handle simple cases
-            return f'        // TODO: declaration - {stmt["declaration"]} = {stmt["value"]};'
+            type_name = stmt["type_name"]
+            var_name = stmt["var_name"]
+            value = stmt.get("value")
+            rust_type = self._map_type(type_name)
+            if value is not None:
+                rust_value = self._convert_expression(value)
+                return f'        let mut {var_name}: {rust_type} = {rust_value};'
+            else:
+                return f'        let mut {var_name}: {rust_type} = Default::default();'
 
         elif stmt_type == "push":
             array_name = stmt["array_name"]

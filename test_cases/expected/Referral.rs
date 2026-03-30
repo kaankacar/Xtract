@@ -41,7 +41,7 @@ pub trait Referral {
     #[endpoint]
     fn pay_bonus(&self, referrer: ManagedAddress<Self::Api>) {
         require!(self.blockchain().get_caller() == owner, "Not owner");
-        uint256 bonus = referralBonus;
+        let mut bonus: BigUint<Self::Api> = referralBonus;
         self.bonus_paid_event(&referrer, &bonus);
     }
 
