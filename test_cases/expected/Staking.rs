@@ -46,7 +46,7 @@ pub trait Staking {
 
     #[endpoint]
     fn claim_reward(&self) {
-        uint256 reward = self.rewards(&self.blockchain().get_caller());
+        let mut reward: BigUint<Self::Api> = self.rewards(&self.blockchain().get_caller());
         require!(reward > BigUint::from(0u32), "No reward");
         self.reward_claimed_event(&self.blockchain().get_caller(), &reward);
     }

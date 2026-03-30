@@ -239,6 +239,20 @@ def test_convert_with_diagnostics():
     assert "pub trait SimpleStorage" in result.code
 
 
+def test_local_declaration_generates_let():
+    """Test that local variable declarations emit let mut bindings"""
+    sol = load("test_cases/solidity/VariableDeclarations.sol")
+    expected = load("test_cases/expected/VariableDeclarations.rs")
+    actual = Transpiler().convert(sol)
+    assert normalize(actual) == normalize(expected), (
+        f"Declaration transpilation mismatch:\n"
+        f"Expected:\n{normalize(expected)}\n\nActual:\n{normalize(actual)}"
+    )
+    assert "let mut sum: u64 = x + y;" in actual
+    assert "let mut ok: bool = true;" in actual
+    assert "let mut result: u64 = sum;" in actual
+
+
 # Count test to verify we have 50 test cases
 def test_fifty_test_cases():
     """Verify we have at least 50 test cases"""

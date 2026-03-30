@@ -53,14 +53,14 @@ pub trait Vault {
     fn complete_withdrawal(&self) {
         require!(self.pendingWithdrawals(&self.blockchain().get_caller()) > BigUint::from(0u32), "No pending withdrawal");
         require!(self.blockchain().get_block_timestamp() >= self.withdrawalTime(&self.blockchain().get_caller()), "Delay not passed");
-        uint256 amount = self.pendingWithdrawals(&self.blockchain().get_caller());
+        let mut amount: BigUint<Self::Api> = self.pendingWithdrawals(&self.blockchain().get_caller());
         self.withdrawal_completed_event(&self.blockchain().get_caller(), &amount.clone());
     }
 
     #[endpoint]
     fn cancel_withdrawal(&self) {
         require!(self.pendingWithdrawals(&self.blockchain().get_caller()) > BigUint::from(0u32), "No pending withdrawal");
-        uint256 amount = self.pendingWithdrawals(&self.blockchain().get_caller());
+        let mut amount: BigUint<Self::Api> = self.pendingWithdrawals(&self.blockchain().get_caller());
         self.withdrawal_cancelled_event(&self.blockchain().get_caller());
     }
 

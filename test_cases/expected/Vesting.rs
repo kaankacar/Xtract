@@ -46,7 +46,7 @@ pub trait Vesting {
     #[endpoint]
     fn release(&self) {
         require!(self.blockchain().get_caller() == beneficiary, "Not beneficiary");
-        uint256 releasable = totalAmount - released;
+        let mut releasable: BigUint<Self::Api> = totalAmount - released;
         require!(releasable > BigUint::from(0u32), "Nothing to release");
         released = released + releasable;
         self.tokens_released_event(&beneficiary, &releasable);
