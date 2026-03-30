@@ -16,6 +16,13 @@ target/
 .vscode/
 .idea/
 
+# macOS
+.DS_Store
+
+# Kanban sync state
+.kanban-github-sync.json
+.kanban-github-sync.log
+
 /target
 ast.json
 input_sol_SimpleContract.abi
