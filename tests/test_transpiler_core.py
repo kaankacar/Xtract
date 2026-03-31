@@ -253,6 +253,52 @@ def test_local_declaration_generates_let():
     assert "let mut result: u64 = sum;" in actual
 
 
+def test_do_while_generates_loop_break():
+    """Test that do-while loops are transpiled to loop { ... if !(...) { break; } }"""
+    sol = """
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
+
+    contract DoWhileTest {
+        uint64 public count;
+
+        function run(uint64 limit) public {
+            uint64 i = 0;
+            do {
+                i = i + 1;
+            } while (i < limit);
+            count = i;
+        }
+    }
+    """
+    result = Transpiler().convert(sol)
+    assert "loop {" in result
+    assert "if !(" in result
+    assert "break;" in result
+
+
+def test_unchecked_generates_passthrough():
+    """Test that unchecked blocks are stripped but inner statements remain"""
+    sol = """
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
+
+    contract UncheckedTest {
+        uint64 public result;
+
+        function add(uint64 a, uint64 b) public {
+            unchecked {
+                result = a + b;
+            }
+        }
+    }
+    """
+    result = Transpiler().convert(sol)
+    assert "unchecked" not in result.replace("// NOTE: unchecked", "")
+    assert "// NOTE: unchecked arithmetic" in result
+    assert "result = a + b" in result or "a + b" in result
+
+
 # Count test to verify we have 50 test cases
 def test_fifty_test_cases():
     """Verify we have at least 50 test cases"""

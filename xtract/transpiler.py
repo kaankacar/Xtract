@@ -103,11 +103,9 @@ class Transpiler:
         # Check for unsupported features
         unsupported_patterns = [
             # Loops and if/else are now supported
-            (r'\bdo\s*\{', "Do-while loops are not yet supported - manual conversion required"),
             (r'\btry\s*\{', "Try-catch blocks are not supported - use require/revert instead"),
             (r'\bcatch\s*\{', "Try-catch blocks are not supported - use require/revert instead"),
             (r'\bassembly\s*\{', "Inline assembly is not supported"),
-            (r'\bunchecked\s*\{', "Unchecked blocks are not yet supported"),
             (r'\bdelete\s+', "Delete operation requires manual review"),
             (r'\.call\s*\{', "Low-level calls are not supported - use direct contract calls"),
             (r'\.delegatecall\s*\(', "Delegatecall is not supported on MultiversX"),
@@ -421,6 +419,58 @@ class Transpiler:
 
             # Remove the processed if/else from remaining
             remaining = remaining[:if_match.start()] + remaining[final_end:]
+
+        # Process do-while loops: do { ... } while (condition);
+        while True:
+            do_match = re.search(r'\bdo\s*\{', remaining)
+            if not do_match:
+                break
+
+            block_start = do_match.end() - 1  # Position of opening brace
+            block_end = self._find_matching_brace(remaining, block_start)
+
+            if block_end == -1:
+                break
+
+            loop_body = remaining[block_start + 1:block_end].strip()
+
+            # Parse trailing while (condition);
+            trailing = remaining[block_end + 1:]
+            while_trail = re.match(r'\s*while\s*\(([^)]+)\)\s*;', trailing)
+            if not while_trail:
+                break
+
+            condition = while_trail.group(1).strip()
+            final_end = block_end + 1 + while_trail.end()
+
+            control_statements.append({
+                "type": "do_while",
+                "condition": condition,
+                "body": loop_body
+            })
+
+            remaining = remaining[:do_match.start()] + remaining[final_end:]
+
+        # Process unchecked blocks: unchecked { ... }
+        while True:
+            unc_match = re.search(r'\bunchecked\s*\{', remaining)
+            if not unc_match:
+                break
+
+            block_start = unc_match.end() - 1
+            block_end = self._find_matching_brace(remaining, block_start)
+
+            if block_end == -1:
+                break
+
+            inner_body = remaining[block_start + 1:block_end].strip()
+
+            control_statements.append({
+                "type": "unchecked",
+                "body": inner_body
+            })
+
+            remaining = remaining[:unc_match.start()] + remaining[block_end + 1:]
 
         # Process for loops: for (init; condition; update) { ... }
         while True:
@@ -859,6 +909,33 @@ class Transpiler:
 
             body_code = '\n'.join(body_lines) if body_lines else '            // empty block'
             return f'        while {condition} {{\n{body_code}\n        }}'
+
+        elif stmt_type == "do_while":
+            condition = self._convert_expression(stmt["condition"])
+            loop_body = stmt["body"]
+
+            body_statements = self._parse_statements(loop_body)
+            body_lines = []
+            for body_stmt in body_statements:
+                converted = self._convert_statement(body_stmt, "")
+                if converted:
+                    body_lines.append(converted)
+
+            body_code = '\n'.join(body_lines) if body_lines else '            // empty block'
+            return f'        loop {{\n{body_code}\n            if !({condition}) {{ break; }}\n        }}'
+
+        elif stmt_type == "unchecked":
+            inner_body = stmt["body"]
+
+            inner_statements = self._parse_statements(inner_body)
+            inner_lines = []
+            for inner_stmt in inner_statements:
+                converted = self._convert_statement(inner_stmt, "")
+                if converted:
+                    inner_lines.append(converted)
+
+            inner_code = '\n'.join(inner_lines)
+            return f'        // NOTE: unchecked arithmetic — overflow behavior differs on MultiversX\n{inner_code}'
 
         return f'        // TODO: unhandled statement: {stmt}'
 
